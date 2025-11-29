@@ -1,0 +1,159 @@
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>School Ops Simulator – ระบบแจ้งซ่อม โรงเรียนชุมชนมาบอำมฤต</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="app-header">
+    <div>
+      <h1>School Ops Simulator</h1>
+      <p>ระบบจำลองการบริหารงานทั่วไป / แจ้งซ่อม – โรงเรียนชุมชนมาบอำมฤต</p>
+    </div>
+    <div class="header-meta">
+      <div>โหมด: <span class="badge badge-sim">Simulation</span></div>
+      <div>สถานศึกษา: โรงเรียนชุมชนมาบอำมฤต</div>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- แผนที่โรงเรียน -->
+    <section class="panel panel-map">
+      <h2>แผนผังโรงเรียน</h2>
+      <p class="panel-subtitle">
+        แตะที่อาคารเพื่อดูงานแจ้งซ่อมที่เกี่ยวข้อง
+      </p>
+      <div id="buildingGrid" class="building-grid">
+        <!-- เติมด้วย JS -->
+      </div>
+    </section>
+
+    <!-- บอร์ดแจ้งซ่อม -->
+    <section class="panel panel-incidents">
+      <div class="panel-header-row">
+        <div>
+          <h2>บอร์ดแจ้งซ่อม</h2>
+          <p class="panel-subtitle">
+            จัดการงานซ่อมตามความสำคัญ งบประมาณ และผลกระทบต่อความปลอดภัยของนักเรียน
+          </p>
+        </div>
+        <button id="btnNewIncident" class="btn btn-secondary">
+          + สุ่มงานแจ้งซ่อมใหม่
+        </button>
+      </div>
+
+      <div class="filters-row">
+        <div class="filter-group">
+          <label for="filterStatus">สถานะ:</label>
+          <select id="filterStatus">
+            <option value="all">ทั้งหมด</option>
+            <option value="Open">เปิดใหม่</option>
+            <option value="In Progress">กำลังดำเนินการ</option>
+            <option value="Resolved">เสร็จสิ้น</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="filterSeverity">ความรุนแรง:</label>
+          <select id="filterSeverity">
+            <option value="all">ทั้งหมด</option>
+            <option value="Low">ต่ำ</option>
+            <option value="Medium">ปานกลาง</option>
+            <option value="High">สูง</option>
+            <option value="Critical">วิกฤต</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="incidentList" class="incident-list">
+        <!-- เติมด้วย JS -->
+      </div>
+    </section>
+
+    <!-- แผงควบคุมเกม -->
+    <section class="panel panel-control">
+      <h2>แผงควบคุม & สถิติ</h2>
+
+      <div class="stats-card">
+        <div class="stat-row">
+          <span>เวลาในเกม</span>
+          <strong id="simTimeLabel">วัน 1 – 08:00 น.</strong>
+        </div>
+        <div class="stat-row">
+          <span>งบประมาณคงเหลือ</span>
+          <strong id="budgetLabel">฿ 100,000</strong>
+        </div>
+        <div class="stat-row">
+          <span>คะแนนประสิทธิภาพ</span>
+          <strong id="scoreLabel">0</strong>
+        </div>
+        <div class="stat-row">
+          <span>งานเปิดใหม่</span>
+          <strong id="openCountLabel">0</strong>
+        </div>
+        <div class="stat-row">
+          <span>งานค้างเกินกำหนด</span>
+          <strong id="overdueCountLabel">0</strong>
+        </div>
+        <div class="stat-row">
+          <span>ดัชนีความเสี่ยง (Risk Index)</span>
+          <strong id="riskLabel">0</strong>
+        </div>
+      </div>
+
+      <div class="control-buttons">
+        <button id="btnAdvanceHour" class="btn btn-primary">
+          ข้ามเวลา +1 ชั่วโมง
+        </button>
+        <button id="btnAdvanceDay" class="btn btn-outline">
+          ข้ามเวลา +1 วัน
+        </button>
+      </div>
+
+      <h3>สร้างงานแจ้งซ่อมเอง</h3>
+      <form id="manualIncidentForm" class="manual-form">
+        <label>
+          อาคาร / พื้นที่
+          <select id="manualBuilding"></select>
+        </label>
+        <label>
+          รายละเอียดปัญหา
+          <input type="text" id="manualDescription" placeholder="เช่น พื้นกระเบื้องแตกหน้าห้อง ป.4/2" required>
+        </label>
+        <label>
+          ระดับความรุนแรง
+          <select id="manualSeverity">
+            <option value="Low">ต่ำ</option>
+            <option value="Medium" selected>ปานกลาง</option>
+            <option value="High">สูง</option>
+            <option value="Critical">วิกฤต</option>
+          </select>
+        </label>
+        <label>
+          ค่าใช้จ่ายโดยประมาณ (บาท)
+          <input type="number" id="manualCost" min="0" step="100" value="1000">
+        </label>
+        <label>
+          เวลาซ่อม (ชั่วโมง)
+          <input type="number" id="manualDuration" min="1" step="1" value="2">
+        </label>
+        <button type="submit" class="btn btn-secondary btn-full">
+          เพิ่มงานแจ้งซ่อม
+        </button>
+      </form>
+
+      <h3>บันทึกเหตุการณ์ (Log)</h3>
+      <div id="eventLog" class="event-log">
+        <!-- เติมด้วย JS -->
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <span>School Ops Simulator · Prototype for Mab Amrit Community School</span>
+    <span>ออกแบบเพื่อใช้ฝึกบริหารงานทั่วไป & ภาวะผู้นำเชิงระบบ</span>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
